@@ -1,4 +1,15 @@
-
+//adding event to search input
+let searchedPlace;
+function searchInput() {
+const searchInput = document.querySelector("#search");
+searchInput.addEventListener("change", (e) => {
+  e.preventDefault();
+  searchedPlace = e.target.value;
+  getWDForHeadSec();
+  console.log(searchedPlace);
+});
+}
+searchInput();
 
 //callThrough onClick on btn...
 async function getPlaceData() {
