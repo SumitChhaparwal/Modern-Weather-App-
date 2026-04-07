@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./src/weatherApp.css -o ./dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.2.2"
+  }
+}

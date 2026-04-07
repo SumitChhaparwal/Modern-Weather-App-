@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="weatherApp.css">
+    <link rel="stylesheet" href="/dist/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=my_location"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-straight/css/uicons-bold-straight.css"
+    />
+
+    <title>Weather App</title>
+  </head>
+  <body>
+    <header>
+      <div
+        class="flex flex-row justify-center items-center my-4 text-gray-300"
+      >
+        <div class="logo mx-4 max-sm:mx-1 max-md:mx-2">WCS</div>
+        <div class="search flex items-center mx-3">
+          <div class="search-input">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              class="placeholder:text-gray-200 text-xs lg:text-sm"
+              placeholder="Search for different cities..."
+            />
+          </div>
+          <div
+            class="search-location mx-1 lg:mx-2"
+            title="use current location"
+          >
+            <button>
+              <span class="material-symbols-outlined"> my_location</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="main-container max-w-4xl lg:max-w-7xl mx-auto max-h-screen">
+        <div class="section-1">
+          <div class="sec-head my-5">
+            <div class="country ml-5 mt-4">
+              <div class="name text-3xl font-semibold" id="countryName"></div>
+              <div class="chanceOf text-sm font-light text-gray-300 my-2">
+               
+              </div>
+            </div>
+            <div class="degC text-4xl font-semibold mt-4 ml-5">
+            </div>
+            <div class="weatherSymbol">
+              
+            </div>
+          </div>
+          <div class="sec-todayW px-3 pt-6 pb-1 rounded-md lg:px-4">
+            <div class="title uppercase text-sm font-bold ml-2">
+              Today Forecast
+            </div>
+            <div
+              class="container mx-auto my-6 pt-2 pb-1 px-2 flex items-center"
+              id="currentF"
+            >
+              <div class="dayTime flex flex-col items-center">
+                <div class="cTime text-xs font-semibold">6:00 AM</div>
+                <div class="cSymbol">
+                  <img src="../assets/static/cloudy-night-1.svg" alt="" />
+                </div>
+                <div class="cTemp text-md font-semibold">23°</div>
+              </div>
+              <div class="dayTime flex flex-col items-center">
+                <div class="cTime text-xs font-semibold">6:00 AM</div>
+                <div class="cSymbol">
+                  <img src="../assets/static/cloudy-night-1.svg" alt="" />
+                </div>
+                <div class="cTemp text-md font-semibold">23°</div>
+              </div>
+              <div class="dayTime flex flex-col items-center">
+                <div class="cTime text-xs font-semibold">6:00 AM</div>
+                <div class="cSymbol">
+                  <img src="../assets/static/cloudy-night-1.svg" alt="" />
+                </div>
+                <div class="cTemp text-md font-semibold">23°</div>
+              </div>
+              <div class="dayTime flex flex-col items-center">
+                <div class="cTime text-xs font-semibold">12:00 PM</div>
+                <div class="cSymbol">
+                  <img src="../assets/static/cloudy-night-1.svg" alt="" />
+                </div>
+                <div class="cTemp text-md font-semibold">23°</div>
+              </div>
+              <div class="dayTime flex flex-col items-center">
+                <div class="cTime text-xs font-semibold">2:00 PM</div>
+                <div class="cSymbol">
+                  <img
+                    class="daySvg"
+                    src="../assets/static/day.svg"
+                    alt=""
+                    class=""
+                  />
+                </div>
+                <div class="cTemp text-md font-semibold">23°</div>
+              </div>
+              <div class="dayTime flex flex-col items-center">
+                <div class="cTime text-xs font-semibold">4:00 PM</div>
+                <div class="cSymbol">
+                  <img
+                    class="daySvg"
+                    src="../assets/static/day.svg"
+                    alt=""
+                    class=""
+                  />
+                </div>
+                <div class="cTemp text-md font-semibold">23°</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-wConditions px-3 pt-6 pb-1 rounded-md lg:px-4">
+            <div class="title uppercase text-sm font-bold ml-2">
+              Air Conditions
+            </div>
+            <div class="wConditions my-6 mx-auto">
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-sr-heat"></i></div>
+                <div class="col2">
+                  <div class="name">Real Feel</div>
+                  <div class="measure">34°</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-br-brightness"></i></div>
+                <div class="col2">
+                  <div class="name">UV Index</div>
+                  <div class="measure">3</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-bs-wind"></i></div>
+                <div class="col2">
+                  <div class="name">Wind</div>
+                  <div class="measure">0.1 km/h</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-bs-raindrops"></i></div>
+                <div class="col2">
+                  <div class="name">Chance of rain</div>
+                  <div class="measure">10%</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-bs-umbrella"></i></div>
+                <div class="col2">
+                  <div class="name">Humidity</div>
+                  <div class="measure">44%</div>
+                </div>
+              </div>
+              <div class="wType">
+                <div class="col1"><i class="fi fi-rs-eye"></i></div>
+                <div class="col2">
+                  <div class="name">Visibility</div>
+                  <div class="measure">1.5 km</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-2">
+          <div class="title uppercase text-sm font-bold ml-6 my-6">
+            7-days Forecast
+          </div>
+          <div class="sevenDayForecast px-6">
+            <div class="day">
+              <div class="dayName">Today</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/day.svg" alt="" />
+                </div>
+                <div class="name">Sunny</div>
+              </div>
+              <div class="temp">
+                <span class="f">36</span
+                ><span class="s text-gray-300">/26</span>
+              </div>
+            </div>
+            <div class="day">
+              <div class="dayName">Tue</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/cloudy-day-2.svg" alt="" />
+                </div>
+                <div class="name">Cloudy</div>
+              </div>
+              <div class="temp">
+                <span class="f">33</span
+                ><span class="s text-gray-300">/22</span>
+              </div>
+            </div>
+            <div class="day">
+              <div class="dayName">Wed</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/cloudy.svg" alt="" />
+                </div>
+                <div class="name">Cloudy</div>
+              </div>
+              <div class="temp">
+                <span class="f">34</span
+                ><span class="s text-gray-300">/27</span>
+              </div>
+            </div>
+            <div class="day">
+              <div class="dayName">Thu</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/cloudy.svg" alt="" />
+                </div>
+                <div class="name">Cloudy</div>
+              </div>
+              <div class="temp">
+                <span class="f">22</span
+                ><span class="s text-gray-300">/25</span>
+              </div>
+            </div>
+            <div class="day">
+              <div class="dayName">Fri</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/rainy-6.svg" alt="" />
+                </div>
+                <div class="name">Rainy</div>
+              </div>
+              <div class="temp">
+                <span class="f">29</span
+                ><span class="s text-gray-300">/26</span>
+              </div>
+            </div>
+            <div class="day">
+              <div class="dayName">Sat</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/thunder.svg" alt="" />
+                </div>
+                <div class="name">Thunder</div>
+              </div>
+              <div class="temp">
+                <span class="f">32</span
+                ><span class="s text-gray-300">/24</span>
+              </div>
+            </div>
+            <div class="day">
+              <div class="dayName">Sun</div>
+              <div class="dayWType">
+                <div class="icon">
+                  <img src="../assets/static/rainy-7.svg" alt="" />
+                </div>
+                <div class="name">Rainy</div>
+              </div>
+              <div class="temp">
+                <span class="f">30</span
+                ><span class="s text-gray-300">/20</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="weatherApp.js"></script>
+  </body>
+</html>

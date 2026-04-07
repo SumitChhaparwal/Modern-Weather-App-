@@ -1,0 +1,335 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-straight/css/uicons-bold-straight.css");
+@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css");
+@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css");
+@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css");
+:root {
+  --bg-color: #0b131e;
+  --bg-sec: #212d3f;
+  --color: #dde0e4;
+  --sec-color: #fbdc1f;
+}
+
+/*----Header-----*/
+body {
+  background-color: var(--bg-color);
+  color: #ffffff;
+  font-size: 16px;
+  font-family: "DM Sans", sans-serif;
+}
+.header {
+  height: 40px;
+}
+.logo {
+  flex-basis: 1%;
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+  font-size: 1.31rem;
+  color: #ffdd00;
+}
+
+.search {
+  flex-basis: 86%;
+}
+
+@media screen and (min-width: 1200px) {
+  .search {
+    flex-basis: 88%;
+  }
+}
+.search-input {
+  background-color: var(--bg-sec);
+  border-radius: 6px;
+  width: 100%;
+  height: 32px;
+}
+.search-input input {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  padding-inline: 6px;
+}
+input:focus {
+  outline: solid 1px #424449;
+}
+
+.search-location button {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+.search-location button:hover {
+  opacity: 0.6;
+}
+
+div .fa-solid {
+  color: #fb2e1f;
+}
+
+main {
+  width: 100%;
+}
+
+/*main-container*/
+.main-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+@media screen and (max-width: 740px) {
+  .main-container {
+    flex-direction: column;
+    margin-inline: 3%;
+    height: 100%;
+    margin-bottom: 500px;
+  }
+}
+
+/*section 1*/
+.section-1 {
+  flex-basis: 60%;
+  box-sizing: border-box;
+}
+
+/*--Head Section--*/
+.section-1 .sec-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "country country weatherSymbol"
+    "deg deg weatherSymbol";
+  border: solid 1px #d9dce21e;
+  border-radius: 15px;
+  margin-bottom: clamp(1rem, 2.5vw, 3rem);
+}
+
+.sec-head .country {
+  grid-area: country;
+}
+
+.sec-head .degC {
+  grid-area: deg;
+}
+
+.sec-head .weatherSymbol {
+  grid-area: weatherSymbol;
+}
+.weatherSymbol img {
+  width: 190px;
+}
+
+/*--TodayWeather Section--*/
+.section-1 .sec-todayW {
+  background-color: var(--bg-sec);
+  border-radius: 12px;
+}
+
+.sec-todayW .title {
+  color: #d9dce2;
+}
+
+.sec-todayW .container {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.container .dayTime:nth-of-type(even) {
+  border-left: solid 2px #293d5a;
+  border-right: solid 2px #293d5a;
+}
+
+.container .dayTime:first-child {
+  border: none;
+}
+.container .dayTime:last-child {
+  border-right: none;
+}
+
+.container .dayTime {
+  width: 20%;
+}
+
+.sec-todayW .container::-webkit-scrollbar {
+  height: 3px;
+  scroll-behavior: smooth;
+}
+.sec-todayW .container::-webkit-scrollbar-track {
+  background-color: #f0f0f049;
+  border-radius: 10px;
+}
+.sec-todayW .container::-webkit-scrollbar-thumb {
+  background-color: #f0f0f048;
+  border-radius: 10px;
+  height: 3px;
+  cursor: pointer;
+}
+.sec-todayW .container::-webkit-scrollbar-thumb:hover {
+  background: #f0f0f0af;
+}
+
+@media screen and (width<=740px) {
+  .sec-todayW .container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .container .dayTime {
+    min-width: 120px;
+    margin-bottom: 21px;
+  }
+}
+
+.dayTime .cTime {
+  color: #aeb1b6;
+}
+
+/*--AirConditions Section--*/
+.sec-wConditions {
+  background-color: var(--bg-sec);
+  width: 100%;
+  margin-top: clamp(1rem, 2.5vw, 3rem);
+  border-radius: 12px;
+}
+
+.sec-wConditions .title {
+  color: #d9dce2;
+}
+
+.sec-wConditions .wConditions {
+  max-width: 690px;
+  height: 24vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  row-gap: 2rem;
+  column-gap: 3rem;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  padding-right: 9px;
+}
+
+.sec-wConditions .wConditions::-webkit-scrollbar {
+  width: 3px;
+  scroll-behavior: smooth;
+}
+.sec-wConditions .wConditions::-webkit-scrollbar-track {
+  background-color: #f0f0f049;
+  border-radius: 10px;
+}
+.wConditions::-webkit-scrollbar-thumb {
+  background-color: #f0f0f048;
+  border-radius: 10px;
+  height: 10px;
+}
+
+.wConditions .wType {
+  width: 150px;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  border: solid 1px #d9dce22d;
+  padding: 12px;
+  border-radius: 20px;
+}
+
+.col1 i {
+  color: #aeb1b6;
+}
+
+.col2 .name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #aeb1b6;
+}
+
+.col2 .measure {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ecf1f5;
+}
+
+/*section-2*/
+.section-2 {
+  flex-basis: 36%;
+  margin-top: 1.5rem;
+  background-color: var(--bg-sec);
+  border-radius: 12px;
+  height: fit-content;
+}
+
+@media screen and (width<=1060px) {
+  .section-2 {
+    flex-basis: 40%;
+  }
+  .section-1 {
+    flex-basis: 54%;
+  }
+}
+
+.section-2 .title {
+  color: #d9dce2;
+}
+
+.section-2 .sevenDayForecast {
+  display: flex;
+  flex-direction: column;
+}
+
+.sevenDayForecast .day:last-child {
+  border: none;
+}
+
+.sevenDayForecast .day {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: solid 2px #293d5a;
+  height: 9vh;
+}
+
+.day .dayName {
+  font-size: 16px;
+  color: #aeb1b6;
+  font-weight: 500;
+  width: 54px;
+}
+
+.day .dayWType {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  width: clamp(180px, 14vw, 200px);
+}
+
+@media screen and ((width <= 866px) and (width > 740px)) {
+  .day .dayWType {
+    width: 14vw;
+  }
+  .dayWType .name {
+    width: 70px;
+    overflow-x: hidden;
+  }
+}
+
+.dayWType .name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ecf1f5;
+}
+
+.temp .f {
+  font-size: 16px;
+  font-weight: 600;
+}
+.temp .s {
+  font-weight: 500;
+}
