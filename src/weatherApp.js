@@ -134,6 +134,9 @@ function displayForHeadSec() {
     }
   }
 }
+if(localStorage.getItem('placeData') && localStorage.getItem('weatherData')){
+  displayForHeadSec();
+}
 
 
 
