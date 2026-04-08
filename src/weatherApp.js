@@ -128,7 +128,10 @@ function displayForHeadSec() {
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
   degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
   //fun which decide img according to weather condition..
-  const finalSymbol = toDecideWSymbol(weatherData.current.is_day, weatherData.current.weather_code);
+  const finalSymbol = toDecideWSymbol(
+    weatherData.current.is_day,
+    weatherData.current.weather_code,
+  );
   weatherSymbol.innerHTML = finalSymbol;
 }
 if (
@@ -197,24 +200,37 @@ function displayForTodayF() {
         dTime: fullTime,
         weatherCode: hourlyWeatherData.hourly.weather_code[i],
         temperature: hourlyWeatherData.hourly.temperature_2m[i],
+        isDay: hourlyWeatherData.hourly.is_day[i],
+        realFeel: hourlyWeatherData.hourly.apparent_temperature[i],
+        uvIndex: hourlyWeatherData.hourly.uv_index[i],
+        windSpeed: hourlyWeatherData.hourly.wind_speed_10m[i],
+        chanceOfRain: hourlyWeatherData.hourly.rain[i],
+        humidity: hourlyWeatherData.hourly.relative_humidity_2m[i],
+        visibility: hourlyWeatherData.hourly.visibility[i],
       };
     })
     .filter((ele) => ele.dHour >= now);
   //changing first element of arrofobjs from now..
   arrOfObjects[0].dTime = "Now";
+  arrOfObjects[0].weatherCode = currentWeatherData.current.weather_code;
+  arrOfObjects[0].temperature = currentWeatherData.current.temperature_2m;
   console.log("Arr", arrOfObjects);
+  if (arrOfObjects) {
+    localStorage.setItem("arrOfObjectsHWD", JSON.stringify(arrOfObjects));
+  }
   //apply mapping...
-  arrOfObjects.map((item) => {
+  const newArrOfObj = arrOfObjects.map((item) => {
     return `
       <div class="dayTime flex flex-col items-center">
-        <div class="cTime text-xs font-semibold">${item.dTime}:00 AM</div>
+        <div class="cTime text-xs font-semibold">${item.dTime === "Now" ? "Now" : item.dTime + `:00 ${item.dHour >= 12 ? "PM" : "AM"}`}</div>
         <div class="cSymbol">
-          <img src="../assets/static/cloudy-night-1.svg" alt="" />
+         ${toDecideWSymbol(item.isDay, item.weatherCode).replace("animated", "static")}
         </div>
-        <div class="cTemp text-md font-semibold">${item.temperature}°</div>
+        <div class="cTemp text-md font-semibold">${item.temperature > 0 ? Math.round(item.temperature) : item.temperature}°</div>
       </div>
       `;
   });
+  currentForecast.innerHTML = newArrOfObj.join("");
   console.log(hourlyWeatherData.hourly);
 }
 if (localStorage.getItem("hourlyWeatherData")) {
@@ -222,4 +238,55 @@ if (localStorage.getItem("hourlyWeatherData")) {
 }
 
 //displayForAirC() for section1 -> air conditions sec
-function displayForAirC() {}
+function displayForAirC() {
+  const arrOfObjects = JSON.parse(localStorage.getItem("arrOfObjectsHWD"));
+  console.log("ArrOfObjs", arrOfObjects);
+  const wcElement = document.querySelector(".wConditions");
+  wcElement.innerHTML = `
+  <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-sr-heat"></i></div>
+                <div class="col2">
+                  <div class="name">Real Feel</div>
+                  <div class="measure">${arrOfObjects[0].realFeel}°</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-br-brightness"></i></div>
+                <div class="col2">
+                  <div class="name">UV Index</div>
+                  <div class="measure">${arrOfObjects[0].uvIndex}</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-bs-wind"></i></div>
+                <div class="col2">
+                  <div class="name">Wind</div>
+                  <div class="measure">${arrOfObjects[0].windSpeed} km/h</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-bs-raindrops"></i></div>
+                <div class="col2">
+                  <div class="name">Chance of rain</div>
+                  <div class="measure">${arrOfObjects[0].chanceOfRain}%</div>
+                </div>
+              </div>
+              <div class="wType shadow-xl">
+                <div class="col1"><i class="fi fi-bs-umbrella"></i></div>
+                <div class="col2">
+                  <div class="name">Humidity</div>
+                  <div class="measure">${arrOfObjects[0].humidity}%</div>
+                </div>
+              </div>
+              <div class="wType">
+                <div class="col1"><i class="fi fi-rs-eye"></i></div>
+                <div class="col2">
+                  <div class="name">Visibility</div>
+                  <div class="measure">${arrOfObjects[0].visibility / 1000} km</div>
+                </div>
+              </div>
+  `;
+}
+if (localStorage.getItem("arrOfObjectsHWD")) {
+  displayForAirC();
+}
