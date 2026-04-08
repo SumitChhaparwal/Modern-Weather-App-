@@ -1,13 +1,13 @@
 //adding event to search input
 let searchedPlace;
 function searchInput() {
-const searchInput = document.querySelector("#search");
-searchInput.addEventListener("change", (e) => {
-  e.preventDefault();
-  searchedPlace = e.target.value;
-  getWDForHeadSec();
-  console.log(searchedPlace);
-});
+  const searchInput = document.querySelector("#search");
+  searchInput.addEventListener("change", (e) => {
+    e.preventDefault();
+    searchedPlace = e.target.value;
+    getWDForHeadSec();
+    console.log(searchedPlace);
+  });
 }
 searchInput();
 
@@ -30,24 +30,24 @@ async function getPlaceData() {
   }
 }
 
-//getWDForHeadSec() for Section1 -> Head-Sec
+// getWDForHeadSec() for Section1 -> Head-Sec
 async function getWDForHeadSec() {
   try {
     await getPlaceData();
     const storedPlaceData = localStorage.getItem("placeData");
-    if(!storedPlaceData){
+    if (!storedPlaceData) {
       console.log("storedPlaceData is not available..");
       return;
     }
     const placeData = JSON.parse(storedPlaceData);
-    if(!placeData){
+    if (!placeData) {
       console.log("placeData is not available...");
       return;
     }
     let latitude = placeData.results[0].latitude;
     let longitude = placeData.results[0].longitude;
 
-    if(!latitude || !longitude){
+    if (!latitude || !longitude) {
       console.log("Error of latitude and longitude...");
       return;
     }
@@ -59,8 +59,9 @@ async function getWDForHeadSec() {
     }
     const data = await response.json();
     const strJson = JSON.stringify(data);
-    localStorage.setItem("weatherData", strJson);
+    localStorage.setItem("currentWeatherData", strJson);
     console.log(data);
+    getForTodayFAndAirC();
     displayForHeadSec();
   } catch (err) {
     console.log("Error:", err);
@@ -73,9 +74,9 @@ function displayForHeadSec() {
   const degreeC = document.querySelector(".degC");
   const weatherSymbol = document.querySelector(".weatherSymbol");
   const placeData = JSON.parse(localStorage.getItem("placeData"));
-  const weatherData = JSON.parse(localStorage.getItem("weatherData"));
+  const weatherData = JSON.parse(localStorage.getItem("currentWeatherData"));
   countryName.innerHTML = placeData.results[0].name;
-  let chanceOfRain = weatherData ? weatherData.current.rain : '0';
+  let chanceOfRain = weatherData ? weatherData.current.rain : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
   degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
   if (weatherData.current.is_day) {
@@ -134,17 +135,69 @@ function displayForHeadSec() {
     }
   }
 }
-if(localStorage.getItem('placeData') && localStorage.getItem('weatherData')){
+if (
+  localStorage.getItem("placeData") &&
+  localStorage.getItem("currentWeatherData")
+) {
   displayForHeadSec();
 }
 
-
-
-
-
-
-
-function displayData() {
-  
+//getForTodayFAndAirC() for section1 -> today forecast sec & air conditions sec...
+async function getForTodayFAndAirC() {
+  try {
+    const storedPlaceData = localStorage.getItem("placeData");
+    if (!storedPlaceData) {
+      console.log("Place data is not available in getForTodayFAndAirC...");
+      return;
+    }
+    const placeData = JSON.parse(storedPlaceData);
+    const latitude = placeData.results[0].latitude;
+    const longitude = placeData.results[0].longitude;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=,temperature_2m,weather_code,rain,apparent_temperature,wind_speed_10m,relative_humidity_2m,visibility,uv_index,is_day&timezone=auto&forecast_days=1`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.log("Http Error: ", response.status);
+      return;
+    }
+    const data = await response.json();
+    localStorage.setItem("hourlyWeatherData", JSON.stringify(data));
+    console.log("hourlyWeatherData", data);
+  } catch (err) {
+    console.log("Error:", err);
+  }
 }
-// displayData();
+
+//displayForTodayF() for section1 -> today forecast sec
+function displayForTodayF() {
+  const hourlyWeatherData = JSON.parse(
+    localStorage.getItem("hourlyWeatherData"),
+  );
+
+  if (!hourlyWeatherData) {
+    console.log("hourlyWeatherData is not available..");
+  }
+  //selecting container element
+  const currentForecast = document.querySelector("#currentF");
+  const dayTimeArr = hourlyWeatherData.hourly.time;
+  const now = new Date().getHours();
+  //creating arr of objects for TodayForecast...
+  const arrOfObjects = dayTimeArr.map((time, i) => {
+    let fullTime = time.slice(11);
+    let editedHour = Math.round(fullTime.slice(0, 2))+1;
+    console.log(editedHour)
+    return {
+      dHour: editedHour,
+      dTime: fullTime,
+      weatherCode: hourlyWeatherData.hourly.weather_code[i],
+      temperature: hourlyWeatherData.hourly.temperature_2m[i],
+    };
+  }).filter((ele) => ele.dHour >= now);
+
+  console.log(arrOfObjects);
+
+  console.log(hourlyWeatherData.hourly);
+}
+displayForTodayF();
+
+//displayForAirC() for section1 -> air conditions sec
+function displayForAirC() {}
