@@ -68,6 +68,53 @@ async function getWDForHeadSec() {
     console.log("Error:", err);
   }
 }
+
+function toDecideWSymbol(isDay, weatherCode) {
+  if (isDay) {
+    console.log("day");
+    if (weatherCode == 0) {
+      return `<img src="../assets/animated/day.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 3 && weatherCode >= 1) {
+      return `<img src="../assets/animated/cloudy-day-1.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode === 45 || weatherCode === 48) {
+      return `<img src="../assets/animated/cloudy.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 57) {
+      return `<img src="../assets/animated/rainy-2.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 67) {
+      return `<img src="../assets/animated/rainy-6.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 77) {
+      return `<img src="../assets/animated/snowy-3.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 82) {
+      return `<img src="../assets/animated/rainy-7.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 86) {
+      return `<img src="../assets/animated/snowy-6.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 99) {
+      return `<img src="../assets/animated/thunder.svg" alt="dayWeatherImage" />`;
+    }
+  } else {
+    console.log("night");
+    if (weatherCode === 0) {
+      return `<img src="../assets/animated/night.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 3 && weatherCode >= 1) {
+      return `<img src="../assets/animated/cloudy-night-1.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode === 45 || weatherCode === 48) {
+      return `<img src="../assets/animated/cloudy.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 57) {
+      return `<img src="../assets/animated/rainy-4.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 67) {
+      return `<img src="../assets/animated/rainy-6.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 77) {
+      return `<img src="../assets/animated/snowy-5.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 82) {
+      return `<img src="../assets/animated/rainy-7.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 86) {
+      return `<img src="../assets/animated/snowy-6.svg" alt="dayWeatherImage" />`;
+    } else if (weatherCode <= 99) {
+      return `<img src="../assets/animated/thunder.svg" alt="dayWeatherImage" />`;
+    }
+  }
+}
+
 //displayForHeadSec() for Section1 -> Head-Sec
 function displayForHeadSec() {
   const countryName = document.querySelector("#countryName");
@@ -80,61 +127,9 @@ function displayForHeadSec() {
   let chanceOfRain = weatherData ? weatherData.current.rain : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
   degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
-  if (weatherData.current.is_day) {
-    console.log("day");
-    if (weatherData.current.weather_code == 0) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/day.svg" alt="dayWeatherImage" />`;
-    } else if (
-      weatherData.current.weather_code <= 3 &&
-      weatherData.current.weather_code >= 1
-    ) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/cloudy-day-1.svg" alt="dayWeatherImage" />`;
-    } else if (
-      weatherData.current.weather_code === 45 ||
-      weatherData.current.weather_code === 48
-    ) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/cloudy.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 57) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/rainy-2.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 67) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/rainy-6.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 77) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/snowy-3.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 82) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/rainy-7.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 86) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/snowy-6.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 99) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/thunder.svg" alt="dayWeatherImage" />`;
-    }
-  } else {
-    console.log("night");
-    if (weatherData.current.weather_code === 0) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/night.svg" alt="dayWeatherImage" />`;
-    } else if (
-      weatherData.current.weather_code <= 3 &&
-      weatherData.current.weather_code >= 1
-    ) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/cloudy-night-1.svg" alt="dayWeatherImage" />`;
-    } else if (
-      weatherData.current.weather_code === 45 ||
-      weatherData.current.weather_code === 48
-    ) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/cloudy.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 57) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/rainy-4.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 67) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/rainy-6.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 77) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/snowy-5.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 82) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/rainy-7.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 86) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/snowy-6.svg" alt="dayWeatherImage" />`;
-    } else if (weatherData.current.weather_code <= 99) {
-      weatherSymbol.innerHTML = `<img src="../assets/animated/thunder.svg" alt="dayWeatherImage" />`;
-    }
-  }
+  //fun which decide img according to weather condition..
+  const finalSymbol = toDecideWSymbol(weatherData.current.is_day, weatherData.current.weather_code);
+  weatherSymbol.innerHTML = finalSymbol;
 }
 if (
   localStorage.getItem("placeData") &&
@@ -179,16 +174,17 @@ function displayForTodayF() {
   if (!hourlyWeatherData) {
     console.log("hourlyWeatherData is not available..");
   }
+  const currentWeatherData = JSON.parse(
+    localStorage.getItem("currentWeatherData"),
+  );
   //selecting container element
   const currentForecast = document.querySelector("#currentF");
   const dayTimeArr = hourlyWeatherData.hourly.time;
-  const timezone = hourlyWeatherData.timezone;
-  const now = new Date().getHours();
-  function formatTime(isoTime) {
-    return new Date(isoTime).toLocaleString("en-US",{
-      timeZone: hourlyWeatherData.timeZone,
-    });
-  }
+  const etimezone = hourlyWeatherData.timezone;
+  console.log(etimezone);
+
+  const currentHour = currentWeatherData.current.time.slice(11, 13);
+  const now = Number(currentHour);
   //creating arr of objects for TodayForecast...
   const arrOfObjects = dayTimeArr
     .map((time, i) => {
@@ -204,10 +200,21 @@ function displayForTodayF() {
       };
     })
     .filter((ele) => ele.dHour >= now);
-  //changing first element of arrofobjs for now..
+  //changing first element of arrofobjs from now..
   arrOfObjects[0].dTime = "Now";
   console.log("Arr", arrOfObjects);
-console.log(formatTime(now));
+  //apply mapping...
+  arrOfObjects.map((item) => {
+    return `
+      <div class="dayTime flex flex-col items-center">
+        <div class="cTime text-xs font-semibold">${item.dTime}:00 AM</div>
+        <div class="cSymbol">
+          <img src="../assets/static/cloudy-night-1.svg" alt="" />
+        </div>
+        <div class="cTemp text-md font-semibold">${item.temperature}°</div>
+      </div>
+      `;
+  });
   console.log(hourlyWeatherData.hourly);
 }
 if (localStorage.getItem("hourlyWeatherData")) {
