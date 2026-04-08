@@ -5,7 +5,9 @@ function searchInput() {
   searchInput.addEventListener("change", (e) => {
     e.preventDefault();
     searchedPlace = e.target.value;
+    localStorage.removeItem("hourlyWeatherData");
     getWDForHeadSec();
+    getForTodayFAndAirC();
     console.log(searchedPlace);
   });
 }
@@ -61,7 +63,6 @@ async function getWDForHeadSec() {
     const strJson = JSON.stringify(data);
     localStorage.setItem("currentWeatherData", strJson);
     console.log(data);
-    getForTodayFAndAirC();
     displayForHeadSec();
   } catch (err) {
     console.log("Error:", err);
@@ -145,6 +146,7 @@ if (
 //getForTodayFAndAirC() for section1 -> today forecast sec & air conditions sec...
 async function getForTodayFAndAirC() {
   try {
+    await getWDForHeadSec();
     const storedPlaceData = localStorage.getItem("placeData");
     if (!storedPlaceData) {
       console.log("Place data is not available in getForTodayFAndAirC...");
@@ -162,6 +164,7 @@ async function getForTodayFAndAirC() {
     const data = await response.json();
     localStorage.setItem("hourlyWeatherData", JSON.stringify(data));
     console.log("hourlyWeatherData", data);
+    displayForTodayF();
   } catch (err) {
     console.log("Error:", err);
   }
@@ -179,25 +182,37 @@ function displayForTodayF() {
   //selecting container element
   const currentForecast = document.querySelector("#currentF");
   const dayTimeArr = hourlyWeatherData.hourly.time;
+  const timezone = hourlyWeatherData.timezone;
   const now = new Date().getHours();
+  function formatTime(isoTime) {
+    return new Date(isoTime).toLocaleString("en-US",{
+      timeZone: hourlyWeatherData.timeZone,
+    });
+  }
   //creating arr of objects for TodayForecast...
-  const arrOfObjects = dayTimeArr.map((time, i) => {
-    let fullTime = time.slice(11);
-    let editedHour = Math.round(fullTime.slice(0, 2))+1;
-    console.log(editedHour)
-    return {
-      dHour: editedHour,
-      dTime: fullTime,
-      weatherCode: hourlyWeatherData.hourly.weather_code[i],
-      temperature: hourlyWeatherData.hourly.temperature_2m[i],
-    };
-  }).filter((ele) => ele.dHour >= now);
-
-  console.log(arrOfObjects);
-
+  const arrOfObjects = dayTimeArr
+    .map((time, i) => {
+      let editHour = time.slice(11);
+      let editedHour = Math.round(editHour.slice(0, 2));
+      let fullTime = editedHour % 12 || 12;
+      console.log(fullTime);
+      return {
+        dHour: editedHour,
+        dTime: fullTime,
+        weatherCode: hourlyWeatherData.hourly.weather_code[i],
+        temperature: hourlyWeatherData.hourly.temperature_2m[i],
+      };
+    })
+    .filter((ele) => ele.dHour >= now);
+  //changing first element of arrofobjs for now..
+  arrOfObjects[0].dTime = "Now";
+  console.log("Arr", arrOfObjects);
+console.log(formatTime(now));
   console.log(hourlyWeatherData.hourly);
 }
-displayForTodayF();
+if (localStorage.getItem("hourlyWeatherData")) {
+  displayForTodayF();
+}
 
 //displayForAirC() for section1 -> air conditions sec
 function displayForAirC() {}
