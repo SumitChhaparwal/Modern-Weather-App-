@@ -6,8 +6,11 @@ function searchInput() {
     e.preventDefault();
     searchedPlace = e.target.value;
     localStorage.removeItem("hourlyWeatherData");
+    localStorage.removeItem("arrOfObjectsHWD");
+    localStorage.removeItem("7DaysForecast");
     getWDForHeadSec();
     getForTodayFAndAirC();
+    getForSevenDayForecast();
     console.log(searchedPlace);
   });
 }
@@ -124,7 +127,7 @@ function displayForHeadSec() {
   const placeData = JSON.parse(localStorage.getItem("placeData"));
   const weatherData = JSON.parse(localStorage.getItem("currentWeatherData"));
   countryName.innerHTML = placeData.results[0].name;
-  let chanceOfRain = weatherData ? weatherData.current.rain : "0";
+  let chanceOfRain = weatherData ? weatherData.current.weather_code : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
   degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
   //fun which decide img according to weather condition..
@@ -163,6 +166,7 @@ async function getForTodayFAndAirC() {
     localStorage.setItem("hourlyWeatherData", JSON.stringify(data));
     console.log("hourlyWeatherData", data);
     displayForTodayF();
+    displayForAirC();
   } catch (err) {
     console.log("Error:", err);
   }
@@ -204,7 +208,7 @@ function displayForTodayF() {
         realFeel: hourlyWeatherData.hourly.apparent_temperature[i],
         uvIndex: hourlyWeatherData.hourly.uv_index[i],
         windSpeed: hourlyWeatherData.hourly.wind_speed_10m[i],
-        chanceOfRain: hourlyWeatherData.hourly.rain[i],
+        chanceOfRain: currentWeatherData.current.weather_code,
         humidity: hourlyWeatherData.hourly.relative_humidity_2m[i],
         visibility: hourlyWeatherData.hourly.visibility[i],
       };
@@ -289,4 +293,105 @@ function displayForAirC() {
 }
 if (localStorage.getItem("arrOfObjectsHWD")) {
   displayForAirC();
+}
+
+//getfunc() for section2 -> seven days forecast sec...
+async function getForSevenDayForecast() {
+  try {
+    await getForTodayFAndAirC();
+    const placeData = JSON.parse(localStorage.getItem("placeData"));
+    if (!placeData) {
+      console.log("place data is not available...");
+      return;
+    }
+    const latitude = placeData.results[0].latitude;
+    const longitude = placeData.results[0].longitude;
+    if (!latitude || !longitude) {
+      console.log("latitude and longitude of place are not defined...");
+      return;
+    }
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_min,temperature_2m_max&models=geosphere_seamless,best_match&timezone=auto&forecast_days=7`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.log("Http Error:", response.status);
+      return;
+    }
+    const data = await response.json();
+    console.log("7DaysForecast Data", data);
+    localStorage.setItem("7DaysForecast", JSON.stringify(data));
+    displayDaysForecast();
+  } catch (err) {
+    console.log("Error:", err);
+  }
+}
+if (localStorage.getItem("placeData")) {
+  getForSevenDayForecast();
+}
+
+//fun() to check weatherConditionofday
+function checkWCOfDay(weatherCode) {
+  if (weatherCode == 0) {
+    return `Sunny`;
+  } else if (weatherCode <= 3 && weatherCode >= 1) {
+    return `Cloudy`;
+  } else if (weatherCode === 45 || weatherCode === 48) {
+    return `Fog`;
+  } else if (weatherCode <= 67 || weatherCode <= 57) {
+    return `Rainy`;
+  } else if (weatherCode <= 77) {
+    return `Snowy`;
+  } else if (weatherCode <= 82) {
+    return `Rainfall`;
+  } else if (weatherCode <= 86) {
+    return `Snowy`;
+  } else if (weatherCode <= 99) {
+    return `Thunder`;
+  }
+}
+//func() for display seven days forecast...
+function displayDaysForecast() {
+  const daysForecast = JSON.parse(localStorage.getItem("7DaysForecast"));
+  const forecastElement = document.querySelector(".sevenDayForecast");
+  if (!daysForecast) {
+    console.log("seven days forecast data is not available");
+    return;
+  }
+  const timeArr = daysForecast.daily.time;
+  console.log(timeArr);
+  const newArray = timeArr.map((time, i) => {
+    const date = new Date(time);
+    const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+    console.log(dayName);
+    return {
+      day: dayName,
+      weatherCode: daysForecast.daily.weather_code_best_match[i],
+      max_temp: daysForecast.daily.temperature_2m_max_best_match[i],
+      min_temp: daysForecast.daily.temperature_2m_min_best_match[i],
+    };
+  });
+  newArray[0].day = "Today";
+
+  const finalDaysForecast = newArray.map((item) => {
+    return `
+      <div class="day">
+              <div class="dayName">${item.day}</div>
+              <div class="dayWType">
+                <div class="icon">
+                  ${toDecideWSymbol(1, item.weatherCode).slice().replace("animated", "static")}
+                </div>
+                <div class="name">${checkWCOfDay(item.weatherCode)}</div>
+              </div>
+              <div class="temp">
+                <span class="f">${item.max_temp}</span
+                ><span class="s text-gray-300">/${item.min_temp}</span>
+              </div>
+       </div>
+      `;
+  }).join('');
+  console.log(finalDaysForecast);
+  forecastElement.innerHTML = finalDaysForecast;
+}
+if (localStorage.getItem("7DaysForecast")) {
+  displayDaysForecast();
 }

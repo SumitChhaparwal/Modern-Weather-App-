@@ -135,6 +135,7 @@ main {
 .sec-todayW .container {
   display: flex;
   flex-direction: row;
+  width: clamp(400px, 49vw, 600px); /*400 49vw 600px*/
   box-sizing: border-box;
   overflow: auto;
 }
@@ -173,7 +174,7 @@ main {
   background: #f0f0f0af;
 }
 
-@media screen and (width<=740px) {
+@media screen and (width<=800px) {
   .sec-todayW .container {
     width: 100%;
     overflow-x: auto;
@@ -184,6 +185,16 @@ main {
   }
 }
 
+@media screen and (width>800px) {
+  .sec-todayW .container {
+    
+    overflow-x: auto;
+  }
+  .container .dayTime {
+    min-width: 120px;
+    margin-bottom: 21px;
+  }
+}
 .dayTime .cTime {
   color: #aeb1b6;
 }
@@ -265,10 +276,10 @@ main {
 
 @media screen and (width<=1060px) {
   .section-2 {
-    flex-basis: 40%;
+    flex-basis: 40vw;
   }
   .section-1 {
-    flex-basis: 54%;
+    flex-basis: 54vw;
   }
 }
 
