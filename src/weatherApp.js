@@ -3,8 +3,18 @@ let searchedPlace;
 function searchInput() {
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("change", (e) => {
+    const searchHistoryArr = [];
     e.preventDefault();
     searchedPlace = e.target.value;
+    searchHistoryArr.unshift(searchedPlace);
+    if (!localStorage.getItem("searchHistory")) {
+      localStorage.setItem("searchHistory", JSON.stringify(searchHistoryArr));
+    } else {
+      const historyArr = JSON.parse(localStorage.getItem("searchHistory"));
+      const newHistoryArr = [...searchHistoryArr, ...historyArr];
+      localStorage.setItem("searchHistory", JSON.stringify(newHistoryArr));
+    }
+
     localStorage.removeItem("hourlyWeatherData");
     localStorage.removeItem("arrOfObjectsHWD");
     localStorage.removeItem("7DaysForecast");
@@ -19,7 +29,7 @@ searchInput();
 //callThrough onClick on btn...
 async function getPlaceData() {
   try {
-    let placeName = searchedPlace;
+    let placeName = searchedPlace ? searchedPlace : "jodhpur";
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${placeName}&count=10&language=en&format=json`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -372,8 +382,9 @@ function displayDaysForecast() {
   });
   newArray[0].day = "Today";
 
-  const finalDaysForecast = newArray.map((item) => {
-    return `
+  const finalDaysForecast = newArray
+    .map((item) => {
+      return `
       <div class="day">
               <div class="dayName">${item.day}</div>
               <div class="dayWType">
@@ -388,10 +399,59 @@ function displayDaysForecast() {
               </div>
        </div>
       `;
-  }).join('');
-  console.log(finalDaysForecast);
+    })
+    .join("");
   forecastElement.innerHTML = finalDaysForecast;
 }
 if (localStorage.getItem("7DaysForecast")) {
   displayDaysForecast();
 }
+
+//displaySearchTerm() fun... to display weatherData of searchTerm when click on a recent search option...
+function displaySearchTerm() {
+  const dropdownHistory = document.querySelector(".dropdownHistory");
+  dropdownHistory.addEventListener("mousedown", (e) => {
+    if (e.target.classList.contains("dropdownItem")) {
+      searchedPlace = e.target.innerText;
+      localStorage.removeItem("hourlyWeatherData");
+      localStorage.removeItem("arrOfObjectsHWD");
+      localStorage.removeItem("7DaysForecast");
+      getWDForHeadSec();
+      getForTodayFAndAirC();
+      getForSevenDayForecast();
+      dropdownHistory.style.display = "none";
+    }
+  });
+}
+//This fun() called in below...
+
+//Search History...
+function searchHistoryFun() {
+  const sInput = document.querySelector("#search");
+  const dropdownHistory = document.querySelector(".dropdownHistory");
+  //Put newly search in history when enter..,
+  const searchHistoryArr = JSON.parse(localStorage.getItem("searchHistory"));
+  const finalSearchHistory = searchHistoryArr
+    .map((item) => {
+      return `
+   <div class="dropdownItem py-1 px-2 rounded-sm">
+    ${item}
+    </div>
+  `;
+    })
+    .join("");
+  dropdownHistory.innerHTML = finalSearchHistory;
+  //ByDefault its display is none...
+  dropdownHistory.style.display = "none";
+  //Disappear when element loose foucs...
+  // sInput.addEventListener("blur", () => {
+  //   dropdownHistory.style.display = "none";
+  // });
+
+  //Appear when get focus...
+  sInput.addEventListener("focus", () => {
+    dropdownHistory.style.display = "block";
+  });
+  displaySearchTerm();
+}
+searchHistoryFun();
