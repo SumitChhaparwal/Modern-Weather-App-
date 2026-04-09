@@ -1,11 +1,32 @@
 //adding event to search input
 let searchedPlace;
+
+function checkCurrentPlace() {
+  //check recentSearched term...
+  if (localStorage.getItem("searchHistory")) {
+    let recentSearch = JSON.parse(localStorage.getItem("searchHistory"));
+    searchedPlace = recentSearch[0];
+  } else {
+    //if all localStorage are empty, its uses default location...
+    searchedPlace = "jodhpur";
+    // localStorage.removeItem("hourlyWeatherData");
+    // localStorage.removeItem("arrOfObjectsHWD");
+    // localStorage.removeItem("7DaysForecast");
+    getWDForHeadSec();
+    getForTodayFAndAirC();
+    getForSevenDayForecast();
+    console.log(searchedPlace);
+    document.querySelector(".dropdownHistory").style.display = "none";
+  }
+}
+checkCurrentPlace();
+
 function searchInput() {
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("change", (e) => {
     const searchHistoryArr = [];
     e.preventDefault();
-    searchedPlace = e.target.value;
+    searchedPlace = e.target.value ? e.target.value : searchedPlace;
     searchHistoryArr.unshift(searchedPlace);
     if (!localStorage.getItem("searchHistory")) {
       localStorage.setItem("searchHistory", JSON.stringify(searchHistoryArr));
@@ -21,6 +42,7 @@ function searchInput() {
     getWDForHeadSec();
     getForTodayFAndAirC();
     getForSevenDayForecast();
+    window.location.reload();
     console.log(searchedPlace);
   });
 }
@@ -29,7 +51,7 @@ searchInput();
 //callThrough onClick on btn...
 async function getPlaceData() {
   try {
-    let placeName = searchedPlace ? searchedPlace : "jodhpur";
+    let placeName = searchedPlace;
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${placeName}&count=10&language=en&format=json`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -136,7 +158,9 @@ function displayForHeadSec() {
   const weatherSymbol = document.querySelector(".weatherSymbol");
   const placeData = JSON.parse(localStorage.getItem("placeData"));
   const weatherData = JSON.parse(localStorage.getItem("currentWeatherData"));
-  countryName.innerHTML = placeData.results[0].name;
+  countryName.innerHTML = searchedPlace
+    ? searchedPlace
+    : placeData.results[0].name;
   let chanceOfRain = weatherData ? weatherData.current.weather_code : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
   degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
@@ -419,7 +443,6 @@ function displaySearchTerm() {
       getWDForHeadSec();
       getForTodayFAndAirC();
       getForSevenDayForecast();
-      dropdownHistory.style.display = "none";
     }
   });
 }
@@ -429,8 +452,9 @@ function displaySearchTerm() {
 function searchHistoryFun() {
   const sInput = document.querySelector("#search");
   const dropdownHistory = document.querySelector(".dropdownHistory");
-  //Put newly search in history when enter..,
-  const searchHistoryArr = JSON.parse(localStorage.getItem("searchHistory"));
+  const searchHistoryArr = JSON.parse(
+    localStorage.getItem("searchHistory"),
+  ).slice(0, 6);
   const finalSearchHistory = searchHistoryArr
     .map((item) => {
       return `
@@ -444,9 +468,9 @@ function searchHistoryFun() {
   //ByDefault its display is none...
   dropdownHistory.style.display = "none";
   //Disappear when element loose foucs...
-  // sInput.addEventListener("blur", () => {
-  //   dropdownHistory.style.display = "none";
-  // });
+  sInput.addEventListener("blur", () => {
+    dropdownHistory.style.display = "none";
+  });
 
   //Appear when get focus...
   sInput.addEventListener("focus", () => {
