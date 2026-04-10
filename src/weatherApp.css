@@ -82,6 +82,24 @@ main {
   background-color: white;
 }
 
+.valid {
+ background-color: #fbfcfd;
+ padding-block: 5px;
+ margin-block: 15px;
+ padding-left: 8px;
+ color: rgb(7, 182, 7);
+ border-radius: 4px;
+}
+
+.invalid {
+ background-color: #fbfcfd;
+ padding-block: 5px;
+ padding-left: 8px;
+ margin-block: 15px;
+ color: rgb(235, 54, 54);
+ border-radius: 4px;
+}
+
 @media screen and (width<=738px) {
   .dropdownHistory{
     width: 77vw;
@@ -288,6 +306,7 @@ main {
   background-color: var(--bg-sec);
   border-radius: 12px;
   height: fit-content;
+  z-index: -1;
 }
 
 @media screen and (width<=1060px) {

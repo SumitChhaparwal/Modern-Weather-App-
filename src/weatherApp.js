@@ -1,11 +1,120 @@
 //adding event to search input
 let searchedPlace;
 
+//get current array element from localstorage...
+// const searchArr = JSON.parse(localStorage.getItem("searchHistory"));
+// let recentSearch = searchArr[0].trim();
+
+function searchInput() {
+  const searchInput = document.querySelector("#search");
+  const dropdownHistory = document.querySelector(".dropdownHistory");
+  const vELement = document.querySelector(".validation");
+  searchInput.addEventListener("change", (e) => {
+    e.preventDefault();
+
+    searchedPlace = e.target.value;
+
+    // Input Validation...
+    //valid fun()
+    function ok(element, msg) {
+      element.innerHTML = msg;
+    }
+    //invalid fun()
+    function error(element, msg) {
+      element.innerText = msg;
+    }
+    const searchPlace = searchedPlace.trim();
+
+    function validateInput() {
+      if (searchedPlace.trim() === "") {
+        dropdownHistory.style.display = "none";
+        vELement.className = "invalid";
+        error(vELement, "*Please fill out this field..");
+        //close slide after delay
+        setTimeout(() => {
+          vELement.style.display = "none";
+        }, 3000);
+        return false;
+      } else if (!/^[a-zA-Z\s]+$/.test(searchPlace)) {
+        vELement.style.display = "block";
+        dropdownHistory.style.display = "none";
+        vELement.className = "invalid";
+        error(vELement, "Invalid place name is entered..");
+        setTimeout(() => {
+          vELement.style.display = "none";
+        }, 3000);
+        return false;
+      } else if (searchPlace.length < 4) {
+        vELement.style.display = "block";
+        dropdownHistory.style.display = "none";
+        vELement.className = "invalid";
+        error(vELement, "*Please enter proper name of the place..");
+        setTimeout(() => {
+          vELement.style.display = "none";
+        }, 3000);
+        return false;
+      } else if (searchPlace.length > 30) {
+        vELement.style.display = "block";
+        dropdownHistory.style.display = "none";
+        vELement.className = "invalid";
+        error(vELement, "*Place name must be under 40 character..");
+        setTimeout(() => {
+          vELement.style.display = "none";
+        }, 3000);
+        return false;
+      } else {
+        vELement.style.display = "block";
+        dropdownHistory.style.display = "none";
+        vELement.className = "valid";
+        ok(vELement, "Place name is valid!");
+        setTimeout(() => {
+          vELement.style.display = "none";
+        }, 2000);
+        return true;
+      }
+    }
+    validateInput();
+
+    const searchHistoryArr = [];
+    if (validateInput()) {
+      searchHistoryArr.unshift(searchedPlace);
+      if (!localStorage.getItem("searchHistory")) {
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistoryArr));
+      } else {
+        const historyArr = JSON.parse(localStorage.getItem("searchHistory"));
+        const newHistoryArr = [...searchHistoryArr, ...historyArr];
+        localStorage.setItem("searchHistory", JSON.stringify(newHistoryArr));
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } else {
+      return;
+    }
+
+    localStorage.removeItem("hourlyWeatherData");
+    localStorage.removeItem("arrOfObjectsHWD");
+    localStorage.removeItem("7DaysForecast");
+    getWDForHeadSec();
+    getForTodayFAndAirC();
+    getForSevenDayForecast();
+    // window.location.reload();
+    console.log(searchedPlace);
+  });
+}
+searchInput();
+
 function checkCurrentPlace() {
   //check recentSearched term...
+  //get current arrayElement element from localstorage to check condition...
+  let recentPlace;
   if (localStorage.getItem("searchHistory")) {
-    let recentSearch = JSON.parse(localStorage.getItem("searchHistory"));
-    searchedPlace = recentSearch[0];
+    recentSearch = JSON.parse(localStorage.getItem("searchHistory"));
+    let recentS = recentSearch[0];
+    recentPlace = recentS ? recentS.trim() : "";
+  }
+  if (localStorage.getItem("searchHistory") && recentPlace) {
+    searchedPlace = recentPlace;
   } else {
     //if all localStorage are empty, its uses default location...
     searchedPlace = "jodhpur";
@@ -19,34 +128,10 @@ function checkCurrentPlace() {
     document.querySelector(".dropdownHistory").style.display = "none";
   }
 }
+// recentSearch === ""
+//   ? console.log("1 recent search is empty..")
+//   :
 checkCurrentPlace();
-
-function searchInput() {
-  const searchInput = document.querySelector("#search");
-  searchInput.addEventListener("change", (e) => {
-    const searchHistoryArr = [];
-    e.preventDefault();
-    searchedPlace = e.target.value ? e.target.value : searchedPlace;
-    searchHistoryArr.unshift(searchedPlace);
-    if (!localStorage.getItem("searchHistory")) {
-      localStorage.setItem("searchHistory", JSON.stringify(searchHistoryArr));
-    } else {
-      const historyArr = JSON.parse(localStorage.getItem("searchHistory"));
-      const newHistoryArr = [...searchHistoryArr, ...historyArr];
-      localStorage.setItem("searchHistory", JSON.stringify(newHistoryArr));
-    }
-
-    localStorage.removeItem("hourlyWeatherData");
-    localStorage.removeItem("arrOfObjectsHWD");
-    localStorage.removeItem("7DaysForecast");
-    getWDForHeadSec();
-    getForTodayFAndAirC();
-    getForSevenDayForecast();
-    window.location.reload();
-    console.log(searchedPlace);
-  });
-}
-searchInput();
 
 //callThrough onClick on btn...
 async function getPlaceData() {
@@ -161,6 +246,7 @@ function displayForHeadSec() {
   countryName.innerHTML = searchedPlace
     ? searchedPlace
     : placeData.results[0].name;
+  countryName.style.textTransform = "capitalize";
   let chanceOfRain = weatherData ? weatherData.current.weather_code : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
   degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
@@ -400,8 +486,8 @@ function displayDaysForecast() {
     return {
       day: dayName,
       weatherCode: daysForecast.daily.weather_code_best_match[i],
-      max_temp: daysForecast.daily.temperature_2m_max_best_match[i],
-      min_temp: daysForecast.daily.temperature_2m_min_best_match[i],
+      max_temp: Math.round(daysForecast.daily.temperature_2m_max_best_match[i]),
+      min_temp: Math.round(daysForecast.daily.temperature_2m_min_best_match[i]),
     };
   });
   newArray[0].day = "Today";
@@ -434,8 +520,13 @@ if (localStorage.getItem("7DaysForecast")) {
 //displaySearchTerm() fun... to display weatherData of searchTerm when click on a recent search option...
 function displaySearchTerm() {
   const dropdownHistory = document.querySelector(".dropdownHistory");
+  const historyArr = JSON.parse(localStorage.getItem("searchHistory"));
+
   dropdownHistory.addEventListener("mousedown", (e) => {
+    // const currentP = e.target.value;
     if (e.target.classList.contains("dropdownItem")) {
+      const newHistoryArr = [e.target.innerText, ...historyArr];
+      localStorage.setItem("searchHistory", JSON.stringify(newHistoryArr));
       searchedPlace = e.target.innerText;
       localStorage.removeItem("hourlyWeatherData");
       localStorage.removeItem("arrOfObjectsHWD");
@@ -443,10 +534,13 @@ function displaySearchTerm() {
       getWDForHeadSec();
       getForTodayFAndAirC();
       getForSevenDayForecast();
+      window.location.reload();
     }
   });
 }
 //This fun() called in below...
+
+//Fun() to store search term in localStorage...
 
 //Search History...
 function searchHistoryFun() {
@@ -479,3 +573,29 @@ function searchHistoryFun() {
   displaySearchTerm();
 }
 searchHistoryFun();
+
+// Fun() to target user current location...
+async function targetCurrentLocation() {
+  try {
+    let latitude = placeData.results[0].latitude;
+    let longitude = placeData.results[0].longitude;
+
+    if (!latitude || !longitude) {
+      console.log("Error of latitude and longitude in current location...");
+      return;
+    }
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,is_day,weather_code,rain&timezone=auto`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.log("Http Error:", response.status);
+      return;
+    }
+    const data = await response.json();
+    const strJson = JSON.stringify(data);
+    localStorage.setItem("currentWeatherData", strJson);
+    console.log(data);
+    displayForHeadSec();
+  } catch (err) {
+    console.log("Error:", err);
+  }
+}
