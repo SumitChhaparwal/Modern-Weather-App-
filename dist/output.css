@@ -482,6 +482,7 @@ input:focus {
   width: 25px;
   height: 25px;
   cursor: pointer;
+  color: rgb(40, 232, 40);
 }
 .search-location button:hover {
   opacity: 0.6;

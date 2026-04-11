@@ -1,9 +1,99 @@
 //adding event to search input
 let searchedPlace;
 
-//get current array element from localstorage...
-// const searchArr = JSON.parse(localStorage.getItem("searchHistory"));
-// let recentSearch = searchArr[0].trim();
+//Current Location Implementation..
+//Checking browser is support current location or not..
+function checkCurrentLocation() {
+  const locationBtn = document.querySelector(".targetCurrentLocation");
+  locationBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    locationBtn.style.color = "rgb(232, 206, 40)";
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error, options);
+    } else {
+      alert("Your browser doesn't support current location..");
+    }
+  });
+}
+checkCurrentLocation();
+
+function success(position) {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+  console.log("current place latitude ", latitude);
+  console.log("current place longitude ", longitude);
+  getPlaceName(latitude, longitude);
+}
+function error() {
+  alert(
+    "Unable to retrieve your current location. Check your browser permission..",
+  );
+}
+const options = {
+  enableHighAccuracy: true,
+  timeout: 20000,
+  maximumAge: 0,
+};
+
+//Getting currentLocation place name..
+async function getPlaceName(lat, lon) {
+  try {
+    if (!lat || !lon) {
+      console.log("latitude and longitude are not available..");
+    }
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.log("Http Error: ", response.status);
+      return;
+    }
+    const placeData = await response.json();
+    let PlaceName = placeData.localityInfo.administrative[2].name;
+    if (localStorage.getItem("searchHistory")) {
+      const preHistory = JSON.parse(localStorage.getItem("searchHistory"));
+      preHistory.unshift(PlaceName);
+      const arr = [...new Set(preHistory)];
+      localStorage.setItem("searchHistory", JSON.stringify(arr));
+      checkCurrentPlace();
+    } else {
+      const arr = [];
+      arr.push(PlaceName);
+      localStorage.setItem("searchHistory", JSON.stringify(arr));
+      checkCurrentPlace();
+    }
+  } catch (err) {
+    console.log("Error to get placeNameData.. ", err);
+    alert("Error occurs when access your location name..");
+  }
+}
+
+function checkCurrentPlace() {
+  //check recentSearched term...
+  //get current arrayElement element from localstorage to check condition...
+  let recentPlace;
+  if (localStorage.getItem("searchHistory")) {
+    recentSearch = JSON.parse(localStorage.getItem("searchHistory"));
+    let recentS = recentSearch[0];
+    recentPlace = recentS ? recentS.trim() : "";
+  }
+  if (localStorage.getItem("searchHistory") && recentPlace) {
+    searchedPlace = recentPlace;
+    getWDForHeadSec();
+    getForTodayFAndAirC();
+    getForSevenDayForecast();
+    console.log(searchedPlace);
+    document.querySelector(".dropdownHistory").style.display = "none";
+  } else {
+    //if all localStorage are empty, its uses default location...
+    searchedPlace = "jodhpur";
+    getWDForHeadSec();
+    getForTodayFAndAirC();
+    getForSevenDayForecast();
+    console.log(searchedPlace);
+    document.querySelector(".dropdownHistory").style.display = "none";
+  }
+}
+checkCurrentPlace();
 
 function searchInput() {
   const searchInput = document.querySelector("#search");
@@ -91,7 +181,6 @@ function searchInput() {
     } else {
       return;
     }
-
     localStorage.removeItem("hourlyWeatherData");
     localStorage.removeItem("arrOfObjectsHWD");
     localStorage.removeItem("7DaysForecast");
@@ -104,48 +193,26 @@ function searchInput() {
 }
 searchInput();
 
-function checkCurrentPlace() {
-  //check recentSearched term...
-  //get current arrayElement element from localstorage to check condition...
-  let recentPlace;
-  if (localStorage.getItem("searchHistory")) {
-    recentSearch = JSON.parse(localStorage.getItem("searchHistory"));
-    let recentS = recentSearch[0];
-    recentPlace = recentS ? recentS.trim() : "";
-  }
-  if (localStorage.getItem("searchHistory") && recentPlace) {
-    searchedPlace = recentPlace;
-  } else {
-    //if all localStorage are empty, its uses default location...
-    searchedPlace = "jodhpur";
-    // localStorage.removeItem("hourlyWeatherData");
-    // localStorage.removeItem("arrOfObjectsHWD");
-    // localStorage.removeItem("7DaysForecast");
-    getWDForHeadSec();
-    getForTodayFAndAirC();
-    getForSevenDayForecast();
-    console.log(searchedPlace);
-    document.querySelector(".dropdownHistory").style.display = "none";
-  }
-}
-// recentSearch === ""
-//   ? console.log("1 recent search is empty..")
-//   :
-checkCurrentPlace();
-
 //callThrough onClick on btn...
 async function getPlaceData() {
   try {
-    let placeName = searchedPlace;
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${placeName}&count=10&language=en&format=json`;
+    let placeName = searchedPlace.replace("district", "");
+
+    console.log("----------------", placeName);
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${placeName.replace(" ", "")}&count=10&language=en&format=json`;
     const response = await fetch(url);
     if (!response.ok) {
       console.log("Http Error:", response.status);
       return;
     }
-    const placeData = await response.json();
+    const placeD = await response.json();
+    console.log("*********************", placeD);
+    if (!placeD.results) {
+      console.log("place data is not available..");
+      return;
+    }
     //apiData in local storage to avoid disappear & to many request through async fun() calling on global scope which automatically call when updates/page reload...
-    localStorage.setItem("placeData", JSON.stringify(placeData));
+    localStorage.setItem("placeData", JSON.stringify(placeD));
     console.log(placeData);
   } catch (err) {
     console.log("Error:", err);
@@ -166,6 +233,7 @@ async function getWDForHeadSec() {
       console.log("placeData is not available...");
       return;
     }
+
     let latitude = placeData.results[0].latitude;
     let longitude = placeData.results[0].longitude;
 
@@ -243,9 +311,7 @@ function displayForHeadSec() {
   const weatherSymbol = document.querySelector(".weatherSymbol");
   const placeData = JSON.parse(localStorage.getItem("placeData"));
   const weatherData = JSON.parse(localStorage.getItem("currentWeatherData"));
-  countryName.innerHTML = searchedPlace
-    ? searchedPlace
-    : placeData.results[0].name;
+  countryName.innerHTML = placeData.results[0].name;
   countryName.style.textTransform = "capitalize";
   let chanceOfRain = weatherData ? weatherData.current.weather_code : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
@@ -273,9 +339,13 @@ async function getForTodayFAndAirC() {
       console.log("Place data is not available in getForTodayFAndAirC...");
       return;
     }
-    const placeData = JSON.parse(storedPlaceData);
+    let placeData = JSON.parse(storedPlaceData);
     const latitude = placeData.results[0].latitude;
     const longitude = placeData.results[0].longitude;
+    if (!latitude || !longitude) {
+      console.log("Latitude and Longitude are not defined..");
+      return;
+    }
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=,temperature_2m,weather_code,rain,apparent_temperature,wind_speed_10m,relative_humidity_2m,visibility,uv_index,is_day&timezone=auto&forecast_days=1`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -426,6 +496,7 @@ async function getForSevenDayForecast() {
     }
     const latitude = placeData.results[0].latitude;
     const longitude = placeData.results[0].longitude;
+
     if (!latitude || !longitude) {
       console.log("latitude and longitude of place are not defined...");
       return;
@@ -521,19 +592,22 @@ if (localStorage.getItem("7DaysForecast")) {
 function displaySearchTerm() {
   const dropdownHistory = document.querySelector(".dropdownHistory");
   const historyArr = JSON.parse(localStorage.getItem("searchHistory"));
-
   dropdownHistory.addEventListener("mousedown", (e) => {
     // const currentP = e.target.value;
     if (e.target.classList.contains("dropdownItem")) {
-      const newHistoryArr = [e.target.innerText, ...historyArr];
-      localStorage.setItem("searchHistory", JSON.stringify(newHistoryArr));
+      let currentP = e.target.innerText;
+      historyArr.unshift(currentP);
+      //using new set() method get array with unique values..
+      const uniqueValueArr = [...new Set(historyArr)];
+      localStorage.setItem("searchHistory", JSON.stringify(uniqueValueArr));
       searchedPlace = e.target.innerText;
       localStorage.removeItem("hourlyWeatherData");
       localStorage.removeItem("arrOfObjectsHWD");
       localStorage.removeItem("7DaysForecast");
-      getWDForHeadSec();
-      getForTodayFAndAirC();
-      getForSevenDayForecast();
+      checkCurrentPlace();
+      // getWDForHeadSec();
+      // getForTodayFAndAirC();
+      // getForSevenDayForecast();
       window.location.reload();
     }
   });
@@ -546,6 +620,9 @@ function displaySearchTerm() {
 function searchHistoryFun() {
   const sInput = document.querySelector("#search");
   const dropdownHistory = document.querySelector(".dropdownHistory");
+  if (!localStorage.getItem("searchHistory")) {
+    return;
+  }
   const searchHistoryArr = JSON.parse(
     localStorage.getItem("searchHistory"),
   ).slice(0, 6);
@@ -573,29 +650,3 @@ function searchHistoryFun() {
   displaySearchTerm();
 }
 searchHistoryFun();
-
-// Fun() to target user current location...
-async function targetCurrentLocation() {
-  try {
-    let latitude = placeData.results[0].latitude;
-    let longitude = placeData.results[0].longitude;
-
-    if (!latitude || !longitude) {
-      console.log("Error of latitude and longitude in current location...");
-      return;
-    }
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,is_day,weather_code,rain&timezone=auto`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.log("Http Error:", response.status);
-      return;
-    }
-    const data = await response.json();
-    const strJson = JSON.stringify(data);
-    localStorage.setItem("currentWeatherData", strJson);
-    console.log(data);
-    displayForHeadSec();
-  } catch (err) {
-    console.log("Error:", err);
-  }
-}
