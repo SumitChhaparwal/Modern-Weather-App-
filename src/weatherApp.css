@@ -55,7 +55,7 @@ input:focus {
   outline: solid 1px #174bce;
 }
 
-.dropdownItem:hover{
+.dropdownItem:hover {
   background-color: #eaeaf3;
   cursor: pointer;
 }
@@ -78,31 +78,31 @@ main {
   width: 100%;
 }
 
-.dropdownHistory{
-  width: clamp(10px, 82vw, 85%); 
+.dropdownHistory {
+  width: clamp(10px, 82vw, 85%);
   background-color: white;
 }
 
 .valid {
- background-color: #fbfcfd;
- padding-block: 5px;
- margin-block: 15px;
- padding-left: 8px;
- color: rgb(7, 182, 7);
- border-radius: 4px;
+  background-color: #fbfcfd;
+  padding-block: 5px;
+  margin-block: 15px;
+  padding-left: 8px;
+  color: rgb(7, 182, 7);
+  border-radius: 4px;
 }
 
 .invalid {
- background-color: #fbfcfd;
- padding-block: 5px;
- padding-left: 8px;
- margin-block: 15px;
- color: rgb(235, 54, 54);
- border-radius: 4px;
+  background-color: #fbfcfd;
+  padding-block: 5px;
+  padding-left: 8px;
+  margin-block: 15px;
+  color: rgb(235, 54, 54);
+  border-radius: 4px;
 }
 
 @media screen and (width<=738px) {
-  .dropdownHistory{
+  .dropdownHistory {
     width: 77vw;
   }
 }
@@ -222,7 +222,6 @@ main {
 
 @media screen and (width>800px) {
   .sec-todayW .container {
-    
     overflow-x: auto;
   }
   .container .dayTime {

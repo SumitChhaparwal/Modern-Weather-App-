@@ -101,9 +101,7 @@ function searchInput() {
   const vELement = document.querySelector(".validation");
   searchInput.addEventListener("change", (e) => {
     e.preventDefault();
-
     searchedPlace = e.target.value;
-
     // Input Validation...
     //valid fun()
     function ok(element, msg) {
