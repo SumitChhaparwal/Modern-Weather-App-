@@ -4,7 +4,7 @@ let searchedPlace;
 function customAlert(msg) {
   const alertMsg = document.querySelector(".alertMsg");
   const cAlert = document.querySelector(".customAlert");
-  cAlert.style.display="flex";
+  cAlert.style.display = "flex";
   alertMsg.innerHTML = msg;
 }
 //close button of alert popup..
@@ -429,7 +429,7 @@ function displayForTodayF() {
   //apply mapping...
   const newArrOfObj = arrOfObjects.map((item) => {
     return `
-      <div class="dayTime flex flex-col items-center">
+      <div class="dayTime">
         <div class="cTime text-xs font-semibold">${item.dTime === "Now" ? "Now" : item.dTime + `:00 ${item.dHour >= 12 ? "PM" : "AM"}`}</div>
         <div class="cSymbol">
          ${toDecideWSymbol(item.isDay, item.weatherCode).replace("animated", "static")}
@@ -452,7 +452,7 @@ function displayForAirC() {
   const wcElement = document.querySelector(".wConditions");
   wcElement.innerHTML = `
   <div class="wType shadow-xl">
-                <div class="col1"><i class="fi fi-sr-heat"></i></div>
+              <div class="col1"><i class="fi fi-sr-heat"></i></div>
                 <div class="col2">
                   <div class="name">Real Feel</div>
                   <div class="measure">${arrOfObjects[0].realFeel}°</div>
