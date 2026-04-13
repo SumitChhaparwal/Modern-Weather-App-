@@ -3,10 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="weatherApp.css" />
     <link rel="stylesheet" href="/dist/output.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-straight/css/uicons-bold-straight.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
       rel="stylesheet"
@@ -44,15 +69,16 @@
               class="dropdownHistory absolute z-10 mt-3 border border-gray-400 bg-white text-gray-800 text-lg rounded-md shadow-2xl px-2 py-2"
             ></div>
             <div class="validation py-1 px-2 rounded-sm"></div>
+            <div class="customAlert mx-auto my-auto">
+              <div class="crossBtn"><i class="fi fi-bs-cross-small"></i></div>
+              <p class="alertMsg px-2"></p>
+            </div>
           </div>
-          <div
-            class="search-location mx-1 lg:mx-2"
-            title="use current location"
-          >
-            <button class="targetCurrentLocation">
-              <span class="material-symbols-outlined"> my_location</span>
-            </button>
-          </div>
+        </div>
+        <div class="search-location mx-1 lg:mx-2" title="use current location">
+          <button class="targetCurrentLocation">
+            <span class="material-symbols-outlined"> my_location</span>
+          </button>
         </div>
       </div>
     </header>

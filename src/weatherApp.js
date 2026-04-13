@@ -1,5 +1,20 @@
 //adding event to search input
 let searchedPlace;
+//custom alert popup..
+function customAlert(msg) {
+  const alertMsg = document.querySelector(".alertMsg");
+  const cAlert = document.querySelector(".customAlert");
+  cAlert.style.display="flex";
+  alertMsg.innerHTML = msg;
+}
+//close button of alert popup..
+const crossBtn = document.querySelector(".crossBtn");
+const cAlert = document.querySelector(".customAlert");
+crossBtn.addEventListener("click", (ele) => {
+  ele.preventDefault();
+  cAlert.style.display = "none";
+  console.log("close");
+});
 
 //Current Location Implementation..
 //Checking browser is support current location or not..
@@ -11,7 +26,7 @@ function checkCurrentLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(success, error, options);
     } else {
-      alert("Your browser doesn't support current location..");
+      customAlert("Your browser doesn't support current location..");
     }
   });
 }
@@ -25,7 +40,7 @@ function success(position) {
   getPlaceName(latitude, longitude);
 }
 function error() {
-  alert(
+  customAlert(
     "Unable to retrieve your current location. Check your browser permission..",
   );
 }
@@ -313,7 +328,8 @@ function displayForHeadSec() {
   countryName.style.textTransform = "capitalize";
   let chanceOfRain = weatherData ? weatherData.current.weather_code : "0";
   chanceOf.innerHTML = `Chance of rain: ${chanceOfRain}%`;
-  degreeC.innerHTML = `${Math.round(weatherData.current.temperature_2m)}<span class="font-normal px-0 mx-0">°</span>`;
+  const currentTemp = Math.round(weatherData.current.temperature_2m);
+  degreeC.innerHTML = `${currentTemp < 39 ? `${currentTemp}<span class="font-normal px-0 mx-0">°</span>` : `${currentTemp}<span class="font-normal px-0 mx-0">°</span> <i class="tempAlert fi fi-tr-high-temperature-alert"></i>`}`;
   //fun which decide img according to weather condition..
   const finalSymbol = toDecideWSymbol(
     weatherData.current.is_day,
@@ -452,7 +468,7 @@ function displayForAirC() {
               <div class="wType shadow-xl">
                 <div class="col1"><i class="fi fi-bs-wind"></i></div>
                 <div class="col2">
-                  <div class="name">Wind</div>
+                  <div class="name">Wind Speed</div>
                   <div class="measure">${arrOfObjects[0].windSpeed} km/h</div>
                 </div>
               </div>

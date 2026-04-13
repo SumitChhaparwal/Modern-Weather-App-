@@ -1,9 +1,5 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
-@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-straight/css/uicons-bold-straight.css");
-@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css");
-@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css");
-@import url("https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css");
+
 :root {
   --bg-color: #0b131e;
   --bg-sec: #212d3f;
@@ -78,6 +74,11 @@ main {
   width: 100%;
 }
 
+.tempAlert {
+  font-size: 28px;
+  color: rgb(235, 44, 44);
+}
+
 .dropdownHistory {
   width: clamp(10px, 82vw, 85%);
   background-color: white;
@@ -101,7 +102,44 @@ main {
   border-radius: 4px;
 }
 
-@media screen and (width<=738px) {
+.customAlert {
+  display: none;
+  background-color: red;
+  font-size: 16px;
+  font-weight: 500;
+  position: fixed;
+  left: 50%;
+  top: 40vh;
+  transform: translateX(-50%);
+  width: 360px; /*360px*/
+  height: 20vh;
+  z-index: 10;
+  border: solid 1px #ccc;
+  border-radius: 10px;
+  color: #0b131e;
+  background-color: #fefeffc9;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.crossBtn {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 7%;
+  right: 5%;
+  background-color: #e7e8ea;
+  padding: 3px;
+  border-radius: 40px;
+  cursor: pointer;
+}
+.crossBtn:hover {
+  opacity: 0.7;
+}
+
+@media screen and (max-width:738px) {
   .dropdownHistory {
     width: 77vw;
   }
@@ -128,6 +166,7 @@ main {
 .section-1 {
   flex-basis: 60%;
   box-sizing: border-box;
+  z-index: -1;
 }
 
 /*--Head Section--*/
@@ -209,7 +248,7 @@ main {
   background: #f0f0f0af;
 }
 
-@media screen and (width<=800px) {
+@media screen and (max-width:800px) {
   .sec-todayW .container {
     width: 100%;
     overflow-x: auto;
@@ -220,7 +259,7 @@ main {
   }
 }
 
-@media screen and (width>800px) {
+@media screen and (min-width:800px) {
   .sec-todayW .container {
     overflow-x: auto;
   }
@@ -309,7 +348,7 @@ main {
   z-index: -1;
 }
 
-@media screen and (width<=1060px) {
+@media screen and (max-width:1060px) {
   .section-2 {
     flex-basis: 40vw;
   }
@@ -356,7 +395,7 @@ main {
   width: clamp(180px, 14vw, 200px);
 }
 
-@media screen and ((width <= 866px) and (width > 740px)) {
+@media screen and ((max-width:866px) and (min-width:740px)) {
   .day .dayWType {
     width: 14vw;
   }
