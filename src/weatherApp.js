@@ -78,7 +78,7 @@ async function getPlaceName(lat, lon) {
     }
   } catch (err) {
     console.log("Error to get placeNameData.. ", err);
-    alert("Error occurs when access your location name..");
+    customAlert("Error occurs when access your location name..");
   }
 }
 

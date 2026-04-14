@@ -212,9 +212,6 @@ main {
   margin-inline: auto;
   overflow-y: hidden;
   overflow-x: scroll;
-  /* scrollbar-width: thin;
-  scrollbar-color: #f0f0f048 #f0f0f049;
-  scroll-behavior: smooth; */
 }
 
 .sec-todayW .container::-webkit-scrollbar {
